@@ -10,8 +10,8 @@ using SignupSystem.Models;
 namespace SignupSystem.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220919064015_SignUpSystem")]
-    partial class SignUpSystem
+    [Migration("20220921033545_signupsystem")]
+    partial class signupsystem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,6 +48,9 @@ namespace SignupSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsChieuSinh")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
 
                     b.Property<int>("QtyStudent")
@@ -314,7 +317,12 @@ namespace SignupSystem.Migrations
                     b.Property<int>("Id_Student")
                         .HasColumnType("int");
 
-                    b.HasKey("Id_Class", "Id_Student");
+                    b.Property<int>("Id_ScheduleTeacher")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id_Class", "Id_Student", "Id_ScheduleTeacher");
+
+                    b.HasIndex("Id_ScheduleTeacher");
 
                     b.HasIndex("Id_Student");
 
@@ -339,6 +347,9 @@ namespace SignupSystem.Migrations
 
                     b.Property<bool>("IsBlock")
                         .HasColumnType("bit");
+
+                    b.Property<float>("Point")
+                        .HasColumnType("real");
 
                     b.HasKey("Id_Point");
 
@@ -428,12 +439,13 @@ namespace SignupSystem.Migrations
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("date");
 
+                    b.Property<string>("Code_MainSubject")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ExtraSubject")
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -445,10 +457,6 @@ namespace SignupSystem.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("MainSubject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PassWord")
                         .IsRequired()
@@ -462,6 +470,8 @@ namespace SignupSystem.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id_Teacher");
+
+                    b.HasIndex("Code_MainSubject");
 
                     b.ToTable("Teachers");
                 });
@@ -477,24 +487,29 @@ namespace SignupSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Code_Subject")
+                        .HasColumnType("varchar(20)");
+
                     b.Property<DateTime>("EndDay")
                         .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<int>("Id_Class")
-                        .HasColumnType("int");
+                    b.Property<bool>("Fri")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("Id_Subject")
+                    b.Property<int>("Id_Class")
                         .HasColumnType("int");
 
                     b.Property<int>("Id_Teacher")
                         .HasColumnType("int");
 
-                    b.Property<string>("SchoolDay")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("Mon")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Sat")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("StartDay")
                         .HasColumnType("datetime2");
@@ -502,7 +517,23 @@ namespace SignupSystem.Migrations
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
+                    b.Property<bool>("Sun")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Thu")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Tue")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Wed")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id_Schedule");
+
+                    b.HasIndex("Code_Subject");
+
+                    b.HasIndex("Id_Class");
 
                     b.HasIndex("Id_Teacher");
 
@@ -630,6 +661,12 @@ namespace SignupSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SignupSystem.Models.TeacherSchedule", "TeacherSchedule")
+                        .WithMany("student_Classes")
+                        .HasForeignKey("Id_ScheduleTeacher")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SignupSystem.Models.Student", "Student")
                         .WithMany("Student_Classes")
                         .HasForeignKey("Id_Student")
@@ -639,6 +676,8 @@ namespace SignupSystem.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("Student");
+
+                    b.Navigation("TeacherSchedule");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Student_Point", b =>
@@ -704,13 +743,38 @@ namespace SignupSystem.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("SignupSystem.Models.Teacher", b =>
+                {
+                    b.HasOne("SignupSystem.Models.Subject", "Subject")
+                        .WithMany("Teachers")
+                        .HasForeignKey("Code_MainSubject")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("SignupSystem.Models.TeacherSchedule", b =>
                 {
+                    b.HasOne("SignupSystem.Models.Subject", "Subject")
+                        .WithMany("TeacherSchedules")
+                        .HasForeignKey("Code_Subject");
+
+                    b.HasOne("SignupSystem.Models.Class", "Class")
+                        .WithMany("TeacherSchedules")
+                        .HasForeignKey("Id_Class")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SignupSystem.Models.Teacher", "Teacher")
                         .WithMany("teacherSchedules")
                         .HasForeignKey("Id_Teacher")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Subject");
 
                     b.Navigation("Teacher");
                 });
@@ -750,6 +814,8 @@ namespace SignupSystem.Migrations
                     b.Navigation("Fees");
 
                     b.Navigation("Student_Classes");
+
+                    b.Navigation("TeacherSchedules");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Course", b =>
@@ -799,6 +865,10 @@ namespace SignupSystem.Migrations
                     b.Navigation("Points");
 
                     b.Navigation("Subject_PointTypes");
+
+                    b.Navigation("Teachers");
+
+                    b.Navigation("TeacherSchedules");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.SubjectDepartment", b =>
@@ -811,6 +881,11 @@ namespace SignupSystem.Migrations
                     b.Navigation("Salarys");
 
                     b.Navigation("teacherSchedules");
+                });
+
+            modelBuilder.Entity("SignupSystem.Models.TeacherSchedule", b =>
+                {
+                    b.Navigation("student_Classes");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.User", b =>

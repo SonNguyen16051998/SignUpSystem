@@ -16,13 +16,14 @@ namespace SignupSystem.Models
         protected override void OnModelCreating(ModelBuilder model)
         {
             //ràng buộc 2 khóa chính  1 bảng cần sử dụng fluent API
-            model.Entity<Student_Class>().HasKey(e => new { e.Id_Class, e.Id_Student });
+            model.Entity<Student_Class>().HasKey(e => new { e.Id_Class, e.Id_Student,e.Id_ScheduleTeacher });
 
             model.Entity<Subject_PointType>().HasKey(e => new { e.Code_Subject, e.Id_PointType });
 
             model.Entity<Role_Quyen>().HasKey(e => new { e.Id_Role, e.Id_Quyen });
 
             model.Entity<User_Quyen>().HasKey(e => new { e.Id_User, e.Id_Quyen });
+
         }
 
         public DbSet<Class> Classes { get; set; }

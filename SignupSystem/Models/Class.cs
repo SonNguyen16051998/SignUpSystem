@@ -23,9 +23,11 @@ namespace SignupSystem.Models
         [Column(TypeName ="nvarchar(255)")]
         public string Avatar { get; set; }
         public bool IsChieuSinh { get; set; }
+        public bool IsOpen { get; set; }
         public Course Course { get; set; }
         public Khoa khoa { get; set; }
         public ICollection<Fee> Fees { get; set; }
         public ICollection<Student_Class> Student_Classes { get; set; }
+        public ICollection<TeacherSchedule> TeacherSchedules { get; set; }
     }
 }

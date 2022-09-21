@@ -27,10 +27,9 @@ namespace SignupSystem.Models
         public string PhoneNo { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string Address { get; set; }
-        [Column(TypeName = "nvarchar(100)"),Required(ErrorMessage ="pls choose main subject")]
-        public string MainSubject { get; set; }//môn dạy chính
-        [Column(TypeName = "nvarchar(100)")]
-        public string ExtraSubject { get; set; }//môn dạy phụ
+        [Required(ErrorMessage ="pls choose main subject")]
+        [ForeignKey("Subject")]
+        public string Code_MainSubject { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string Avatar { get; set; }
         [Required(ErrorMessage = "Enter user password")]
@@ -45,5 +44,6 @@ namespace SignupSystem.Models
         public string RetypePassWord { get; set; }
         public ICollection<TeacherSchedule> teacherSchedules { get; set; }
         public ICollection<Salary> Salarys { get; set; }
+        public Subject  Subject { get; set; }
     }
 }

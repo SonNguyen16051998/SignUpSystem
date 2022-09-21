@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SignupSystem.Models;
+using SignupSystem.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,13 @@ namespace SignupSystem
 
             services.AddDbContext<DataContext>(option =>
                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<IStudent,StudentSvc>();
+            services.AddTransient<ICourse,CourseSvc>();
+            services.AddTransient<ITeacher,TeacherSvc>();
+            services.AddTransient<ISubjectDepartment, SubjectDepartmentSvc>();
+   
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>

@@ -13,10 +13,12 @@ namespace SignupSystem.Models
         [ForeignKey("SubjectDepartment")]
         public int Id_SubjectDerpartment { get; set; }//id tổ bộ môn
         [ForeignKey("khoa")]
-        public int Id_Khoa { get; set; }
+        public int Id_Khoa { get; set; }//id khoa-khối
         public SubjectDepartment SubjectDepartment { get; set; }
         public Khoa khoa { get; set; }
         public ICollection<Student_Point> Points { get; set; }
         public ICollection<Subject_PointType> Subject_PointTypes { get; set; }
+        public ICollection<Teacher> Teachers { get; set; }
+        public ICollection<TeacherSchedule> TeacherSchedules { get; set; }
     }
 }

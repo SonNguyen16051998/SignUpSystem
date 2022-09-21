@@ -6,13 +6,13 @@ namespace SignupSystem.Models
     public class Subject_PointType
     {
         [ForeignKey("Subject")]
-        public string Code_Subject { get; set; }
+        public string Code_Subject { get; set; }//ma mon hoc
         [ForeignKey("PointType")]
-        public int Id_PointType { get; set; }
+        public int Id_PointType { get; set; }//kieu diem.vd:diem 1 tiet
         [Required]
-        public int Qty { get; set; }
+        public int Qty { get; set; }//so luong diem
         [Required]
-        public int QtyRequied { get; set; }
+        public int QtyRequied { get; set; }//so luong diem bat buoc
         public Subject Subject { get; set; }
         public PointType PointType { get; set; }
     }

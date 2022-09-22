@@ -11,9 +11,11 @@ namespace SignupSystem.Services
     public interface ISubject
     {
         Task<List<Subject>> GetSubjectsAsync();//lay toan bo mon hoc
+        Task<Subject> GetSubjectAsync(string code_subject);//lay mon hoc bang ma mon hoc
         Task<bool> AddSubjectAsync(Subject subject);//them mon hoc
         Task<bool> UpdateSubjectAsync(Subject subject);//cap nhat mon hoc
         Task<bool> DeleteSubjectAsync(string Code_Subject);//xoa mon hoc
+        Task<bool> CheckDeleteSubjectAsync(string Code_Subject);//kiem tra mon hoc duoc xoa khong
     }
     public class SubjectSvc:ISubject
     {
@@ -30,6 +32,10 @@ namespace SignupSystem.Services
                         .Include(x=>x.SubjectDepartment)
                         .ToListAsync();
             return subjects;
+        }
+        public async Task<Subject> GetSubjectAsync(string code_subject)
+        {
+            return await _context.Subjects.Where(x=>x.Code_Subject == code_subject).FirstOrDefaultAsync();
         }
         public async Task<bool> AddSubjectAsync(Subject subject)
         {
@@ -74,6 +80,21 @@ namespace SignupSystem.Services
             {
             }
             return ret;
+        }
+        public async Task<bool> CheckDeleteSubjectAsync(string Code_Subject)
+        {
+            var studentPoint=await _context.Student_Points
+                .Where(x=>x.Code_Subject==Code_Subject).FirstOrDefaultAsync();
+            var subjectPointType = await _context.Subject_Pointypes
+                .Where(x => x.Code_Subject.Equals(Code_Subject)).FirstOrDefaultAsync();
+            var teachershedule=await _context.TeacherSchedules
+                .Where(x=>x.Code_Subject==Code_Subject).FirstOrDefaultAsync();
+            var teacher=await _context.Teachers.Where(x=>x.Code_MainSubject==Code_Subject).FirstOrDefaultAsync();
+            if(studentPoint==null && subjectPointType==null && teachershedule==null && teacher==null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

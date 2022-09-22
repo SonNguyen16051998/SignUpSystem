@@ -15,7 +15,10 @@ namespace SignupSystem.Controllers
         {
             _student = student;
         }
-
+        /// <summary>
+        /// lấy toàn bộ danh sách học viên
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, ActionName("student")]
         public async Task<IActionResult> GetStudentsAsync()
         {
@@ -26,7 +29,11 @@ namespace SignupSystem.Controllers
                 data = await _student.GetStudentsAsync()
             });
         }
-
+        /// <summary>
+        /// thêm học viên
+        /// </summary>
+        /// <param name="student"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("student")]
         public async Task<IActionResult> AddStudentAsync(Student student)
         {
@@ -47,6 +54,11 @@ namespace SignupSystem.Controllers
                 retText = "add student failure"
             });
         }
+        /// <summary>
+        /// lấy toàn bộ lớp học của học viên và thời khóa biểu của học viên
+        /// </summary>
+        /// <param name="id">mã học viên</param>
+        /// <returns></returns>
         [HttpGet("{id}"), ActionName("lophoc")]
         public async Task<IActionResult> GetClassesByStudentAsync(int id)
         {
@@ -57,12 +69,17 @@ namespace SignupSystem.Controllers
                 data = await _student.GetClassesByStudentAsync(id)
             });
         }
-        [HttpDelete(),ActionName("huydangky")]
+        /// <summary>
+        /// hủy đăng ký lớp học
+        /// </summary>
+        /// <param name="student_Class"></param>
+        /// <returns></returns>
+        [HttpDelete(), ActionName("huydangky")]
         public async Task<IActionResult> DeleteClassesOfStudentAsync(Student_Class student_Class)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _student.DeleteClassesOfStudentAsync(student_Class))
+                if (await _student.DeleteClassesOfStudentAsync(student_Class))
                 {
                     return Ok(new
                     {
@@ -77,13 +94,18 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-        [HttpPost,ActionName("dangkylop")]
+        /// <summary>
+        /// đăng ký lớp học
+        /// </summary>
+        /// <param name="studentClass"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("dangkylop")]
         public async Task<IActionResult> ClassRegistrationAsync(Student_Class studentClass)
         {
             studentClass.Id_ScheduleTeacher = 1;
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _student.ClassRegistrationAsync(studentClass))
+                if (await _student.ClassRegistrationAsync(studentClass))
                 {
                     return Ok(new
                     {
@@ -91,6 +113,11 @@ namespace SignupSystem.Controllers
                         retText = "register class successfuly"
                     });
                 }
+                return Ok(new
+                {
+                    retCode = 0,
+                    retText = "Qty already full"
+                }); ;
             }
             return Ok(new
             {
@@ -98,7 +125,12 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-        [HttpGet("{id}"),ActionName("student")]
+        /// <summary>
+        /// lấy thông tin một học viên
+        /// </summary>
+        /// <param name="id">mã học viên</param>
+        /// <returns></returns>
+        [HttpGet("{id}"), ActionName("student")]
         public async Task<IActionResult> GetStudentAsync(int id)
         {
             return Ok(new
@@ -108,12 +140,17 @@ namespace SignupSystem.Controllers
                 data = await _student.GetStudentAsync(id)
             });
         }
-        [HttpPut,ActionName("student")]
+        /// <summary>
+        /// cập nhật thông tin học viên
+        /// </summary>
+        /// <param name="student"></param>
+        /// <returns></returns>
+        [HttpPut, ActionName("student")]
         public async Task<IActionResult> UpdateStudentAsync(Student student)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _student.UpdateStudentAsync(student))
+                if (await _student.UpdateStudentAsync(student))
                 {
                     return Ok(new
                     {
@@ -129,10 +166,15 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-        [HttpDelete("{id}"),ActionName("student")]
+        /// <summary>
+        /// xóa học viên
+        /// </summary>
+        /// <param name="id">mã học viên</param>
+        /// <returns></returns>
+        [HttpDelete("{id}"), ActionName("student")]
         public async Task<IActionResult> DeleteStudentAsync(int id)
         {
-            if(await _student.CheckStudent(id))
+            if (await _student.CheckStudent(id))
             {
                 if (await _student.DeleteStudentAsync(id))
                 {
@@ -149,13 +191,17 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-
-        [HttpPost,ActionName("thuhocphi")]
+        /// <summary>
+        /// thu học phí
+        /// </summary>
+        /// <param name="fee"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("thuhocphi")]
         public async Task<IActionResult> ThuHocPhiAsync(Fee fee)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _student.ThuHocPhiAsync(fee))
+                if (await _student.ThuHocPhiAsync(fee))
                 {
                     return Ok(new
                     {

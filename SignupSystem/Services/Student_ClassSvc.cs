@@ -12,7 +12,7 @@ namespace SignupSystem.Services
     {
         Task<bool> DeleteStudentFromClass(int id_Student);//xoa hoc vien khoi lop hoc
     }
-    public class Student_ClassSvc
+    public class Student_ClassSvc:IStudentClass
     {
         private readonly DataContext _context;
         public Student_ClassSvc(DataContext context)

@@ -5,6 +5,8 @@ namespace SignupSystem.Models
 {
     public class Subject_PointType
     {
+        [ForeignKey("Course")]
+        public string Code_Course { get; set; }
         [ForeignKey("Subject")]
         public string Code_Subject { get; set; }//ma mon hoc
         [ForeignKey("PointType")]
@@ -15,5 +17,6 @@ namespace SignupSystem.Models
         public int QtyRequied { get; set; }//so luong diem bat buoc
         public Subject Subject { get; set; }
         public PointType PointType { get; set; }
+        public Course Course { get; set; }
     }
 }

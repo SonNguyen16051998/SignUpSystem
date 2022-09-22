@@ -15,6 +15,10 @@ namespace SignupSystem.Controllers
         {
             _subjectDepartment = subjectDepartment;
         }
+        /// <summary>
+        /// lấy toàn bộ tổ bộ môn
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -25,6 +29,11 @@ namespace SignupSystem.Controllers
                 data = await _subjectDepartment.GetSubjectDepartmentsAsync()
             });
         }
+        /// <summary>
+        /// lấy thông tin một tổ bộ môn
+        /// </summary>
+        /// <param name="id">mã bộ môn</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -35,12 +44,17 @@ namespace SignupSystem.Controllers
                 data = await _subjectDepartment.GetSubjectDepartmentAsync(id)
             });
         }
+        /// <summary>
+        /// thêm tổ bộ môn
+        /// </summary>
+        /// <param name="subjectDepartment"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> PostAsync(SubjectDepartment subjectDepartment)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _subjectDepartment.AddSubjectDepartmentAsync(subjectDepartment))
+                if (await _subjectDepartment.AddSubjectDepartmentAsync(subjectDepartment))
                 {
                     return Ok(new
                     {
@@ -55,10 +69,15 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
+        /// <summary>
+        /// cập nhật tổ bộ môn
+        /// </summary>
+        /// <param name="subjectDepartment"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(SubjectDepartment subjectDepartment)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (await _subjectDepartment.UpdateSubjectDepartmentAsync(subjectDepartment))
                 {
@@ -76,12 +95,17 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-        [HttpDelete("{id")]
+        /// <summary>
+        /// xóa tổ bộ môn
+        /// </summary>
+        /// <param name="id">mã bộ môn</param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            if(await _subjectDepartment.CheckDeleteDepartment(id))
+            if (await _subjectDepartment.CheckDeleteDepartment(id))
             {
-                if(await _subjectDepartment.DeleteSubjectDepartmentAsync(id))
+                if (await _subjectDepartment.DeleteSubjectDepartmentAsync(id))
                 {
                     return Ok(new
                     {

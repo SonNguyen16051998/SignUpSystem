@@ -15,6 +15,10 @@ namespace SignupSystem.Controllers
         {
             _coure = course;
         }
+        /// <summary>
+        /// lấy toàn bộ niên khóa
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetCoursesAsync()
         {
@@ -25,22 +29,32 @@ namespace SignupSystem.Controllers
                 data = await _coure.GetCoursesAsync()
             });
         }
-        [HttpGet("{code:string}")]
-        public async Task<IActionResult> GetCourseAsync(string code)
+        /// <summary>
+        /// lấy một niên khóa 
+        /// </summary>
+        /// <param name="id">mã niên khóa</param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCourseAsync(string id)
         {
             return Ok(new
             {
                 retCode = 1,
                 retText = "successfuly",
-                data = await _coure.GetCourseAsync(code)
+                data = await _coure.GetCourseAsync(id)
             });
         }
+        /// <summary>
+        /// thêm niên khóa
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddCourseAsync(Course course)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _coure.AddCourseAsync(course))
+                if (await _coure.AddCourseAsync(course))
                 {
                     return Ok(new
                     {
@@ -55,12 +69,17 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
+        /// <summary>
+        /// cập nhật niên khóa
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> UpdateCourseAsync(Course course)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if(await _coure.UpdateCourseAsync(course))
+                if (await _coure.UpdateCourseAsync(course))
                 {
                     return Ok(new
                     {
@@ -76,12 +95,17 @@ namespace SignupSystem.Controllers
                 retText = "failure"
             });
         }
-        [HttpDelete("{code:string}")]
-        public async Task<IActionResult> DeleteAsync(string code)
+        /// <summary>
+        /// xóa niên khóa
+        /// </summary>
+        /// <param name="id">mã niên khóa</param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
-            if(await _coure.CheckDeleteCourseAsync(code))
+            if (await _coure.CheckDeleteCourseAsync(id))
             {
-                if (await _coure.DeleteCourseAsync(code))
+                if (await _coure.DeleteCourseAsync(id))
                 {
                     return Ok(new
                     {

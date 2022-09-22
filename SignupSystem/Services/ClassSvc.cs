@@ -12,16 +12,22 @@ namespace SignupSystem.Services
     public interface IClass
     {
         Task<List<Class>> GetClassesAsync();//lay toan bo lop hoc
+        Task<Class> GetClassAsync(int id_Class);//lay mot lop hoc
         Task<bool> AddClassAsync(Class entity);//them lop hoc
         Task<bool> UpdateClassAsync(Class entity);//cap nhat lop hoc
         Task<bool> AddPointAsync(Student_Point student_Point);//them diem cho mot hoc sinh
         Task<bool> AddPointsAsync(ViewAddPoint addListPoint); //them diem cho nhieu hoc sinh
         Task<List<ViewListDiem>> GetStudent_PointsAsync(string code_Subject);//lay toan bo diem cua hoc vien
         /*Task<bool> UpdateStudent_PointAsync(List<ViewListDiem> listDiem);//chinh sua diem*/
-        Task<bool> BlockPointAsync(List<Student_Point> entity);
+        Task<bool> BlockPointAsync(List<Student_Point> entity);//chot diem
+        Task<List<Student_Class>> GetStudent_ClassesAsync(int id_Class);//lay toan bo  hoc vien cua lop hoc
         Task<List<ViewListDiem>> GetListDiemByStudentAsync(int studentId);//lay diem cua mot hoc vien
+        Task<List<TeacherSchedule>> GetTeacherSchedulesAsync(int id_Class);//lay toan bo mon hoc cua lop hoc
+        Task<bool> DeleteSubjectInClassAsync(DeleteSubject subject);//xoa mon hoc khoi lop hoc
+        Task<bool> DeleteClassAsync(int id_Class);//xoas lop hoc
+        Task<bool> CheckDeleteClassAsync(int id_Class);//kiem tra lop hoc co duoc xoa hay khong
     }
-    public class ClassSvc
+    public class ClassSvc:IClass
     {
         private readonly DataContext _context;
         public ClassSvc(DataContext context)
@@ -36,6 +42,10 @@ namespace SignupSystem.Services
                 .Include(x=>x.Id_Khoa)
                 .ToListAsync();
             return lophoc;
+        }
+        public async Task<Class> GetClassAsync(int id_Class)
+        {
+            return await _context.Classes.Where(x=>x.Id_Class==id_Class).FirstOrDefaultAsync();
         }
         public async Task<bool> AddClassAsync(Class entity)
         {
@@ -208,7 +218,7 @@ namespace SignupSystem.Services
             }
             return ret;
         }
-        public async Task<List<ViewListDiem>> ViewListDiemAsync(int id_Student)
+        public async Task<List<ViewListDiem>> GetListDiemByStudentAsync(int id_Student)
         {
             List<Student_Point> student_Points = new List<Student_Point>();
             student_Points = await _context.Student_Points
@@ -273,6 +283,68 @@ namespace SignupSystem.Services
                 });
             }
             return viewListDiems;
+        }
+        public async Task<List<Student_Class>> GetStudent_ClassesAsync(int id_Class)
+        {
+            return await _context.Student_Classes.Where(x=>x.Id_Class == id_Class)
+                .Include(x=>x.Student)    
+                .ToListAsync();
+        }
+        public async Task<List<TeacherSchedule>> GetTeacherSchedulesAsync(int id_Class)
+        {
+            return await _context.TeacherSchedules.Where(x=>x.Id_Class==id_Class)
+                    .Include(x=>x.Code_Subject).ToListAsync();
+        }
+        public async Task<bool> DeleteSubjectInClassAsync(DeleteSubject subject)
+        {
+            bool ret = false;
+            try
+            {
+                var QtySubjectInClass = await _context.TeacherSchedules
+                .Where(x => x.Id_Class == subject.Id_Class).ToListAsync();
+                var sub = await _context.TeacherSchedules.Where(x => x.Id_Class == subject.Id_Class
+                             && x.Code_Subject == subject.Code_Subect).FirstOrDefaultAsync();
+                if (QtySubjectInClass.Count <= 1)
+                {
+                    var student_class = await _context.Student_Classes.Where(x => x.Id_Class == subject.Id_Class).FirstOrDefaultAsync();
+                    _context.Student_Classes.Remove(student_class);
+                }
+                _context.TeacherSchedules.Remove(sub);
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
+            return ret;
+        }
+        public async Task<bool> DeleteClassAsync(int id_Class)
+        {
+            bool ret=false; 
+            try
+            {
+                var entity=await _context.Classes.Where(x=>x.Id_Class==id_Class).FirstOrDefaultAsync(); 
+                _context.Classes.Remove(entity);
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
+            return ret;
+        }
+        public async Task<bool> CheckDeleteClassAsync(int id_Class)
+        {
+            bool ret = false;
+            try
+            {
+                var fee=await _context.Fees.Where(x=>x.Id_Class== id_Class).FirstOrDefaultAsync();
+                var Student = await _context.Student_Classes.Where(x => x.Id_Class == id_Class).FirstOrDefaultAsync();
+                var schedule=await _context.TeacherSchedules.Where(x=>x.Id_Class.Equals(id_Class)).FirstOrDefaultAsync();
+                if (schedule==null && fee==null && Student==null)
+                {
+                    ret = true;
+                }
+                ret = false;
+            }
+            catch { }
+            return ret;
         }
     }
 }

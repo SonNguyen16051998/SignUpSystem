@@ -87,17 +87,23 @@ namespace SignupSystem.Services
             bool ret = false;
             try
             {
-                TeacherSchedule teacherSchedule = new TeacherSchedule();
-                teacherSchedule = await _context.TeacherSchedules
-                                 .Where(x => x.Id_Class == studentClass.Id_Class).FirstOrDefaultAsync();
-                studentClass.Id_ScheduleTeacher = teacherSchedule.Id_Schedule;
-                await _context.Student_Classes.AddAsync(studentClass);
                 Class lophoc = new Class();
                 lophoc = await _context.Classes.Where(x => x.Id_Class == studentClass.Id_Class).FirstOrDefaultAsync();
-                lophoc.QtyStudent += 1;
-                _context.Classes.Update(lophoc);
-                await _context.SaveChangesAsync();
-                ret = true;
+                if(lophoc.QtyStudent>lophoc.QtyStudentExist)
+                {
+                    TeacherSchedule teacherSchedule = new TeacherSchedule();
+                    teacherSchedule = await _context.TeacherSchedules
+                                     .Where(x => x.Id_Class == studentClass.Id_Class).FirstOrDefaultAsync();
+                    studentClass.Id_ScheduleTeacher = teacherSchedule.Id_Schedule;
+                    await _context.Student_Classes.AddAsync(studentClass);
+
+                    lophoc.QtyStudent += 1;
+                    lophoc.QtyStudentExist += 1;
+                    _context.Classes.Update(lophoc);
+                    await _context.SaveChangesAsync();
+                    ret = true;
+                }
+                ret = false;
             }
             catch { }
             return ret;
@@ -142,7 +148,7 @@ namespace SignupSystem.Services
         }
         public async Task<bool> ThuHocPhiAsync(Fee fee)
         {
-            bool ret = false;
+            bool ret = true;
             try
             {
                 await _context.Fees.AddAsync(fee);

@@ -133,6 +133,7 @@ namespace SignupSystem.Migrations
                     Id_Khoa = table.Column<int>(type: "int", nullable: false),
                     ClassName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     QtyStudent = table.Column<int>(type: "int", nullable: false),
+                    QtyStudentExist = table.Column<int>(type: "int", nullable: true),
                     Fee = table.Column<float>(type: "real", nullable: false),
                     Desc = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(255)", nullable: true),
@@ -323,6 +324,7 @@ namespace SignupSystem.Migrations
                 name: "Subject_Pointypes",
                 columns: table => new
                 {
+                    Code_Course = table.Column<string>(type: "varchar(20)", nullable: false),
                     Code_Subject = table.Column<string>(type: "varchar(20)", nullable: false),
                     Id_PointType = table.Column<int>(type: "int", nullable: false),
                     Qty = table.Column<int>(type: "int", nullable: false),

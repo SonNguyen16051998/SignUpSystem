@@ -16,6 +16,7 @@ namespace SignupSystem.Models
         public string ClassName { get; set; }//tên lớp
         [Required]
         public int QtyStudent { get; set; }//số lượng học sinh
+        public int QtyStudentExist { get; set; }
         [Required]
         public float Fee { get; set; }//học phí
         [Column(TypeName ="nvarchar(255)")]

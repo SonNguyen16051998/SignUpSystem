@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SignupSystem.Models.ViewModel;
 
 namespace SignupSystem.Services
 {
@@ -20,7 +21,13 @@ namespace SignupSystem.Services
         Task<bool> DeleteStudentAsync(int id_Student);//xóa học viên
         Task<bool> ThuHocPhiAsync(Fee fee);//tao phieu thu hoc phi
         Task<bool> CheckStudent(int id_Student);//kiểm tra học viên có được xóa hay k
-       
+        Task<Student> LoginAsync(ViewLogin login);//dang nhap
+        Task<bool> isPass(string email, string pass);//kiem tra pass dung hay khong
+        Task<bool> isEmail(string email);//kiem tra ton tai cua email
+        Task<bool> CreateOrUpdateOTPAsync(OTP oTP);//tạo mã otp hoặc cập nhật mã otp mới cho email đã tồn tại
+        Task<bool> ConfirmOTPAsync(string email, string otp);//xác nhận OTP sau khi nhập mã OTP
+        Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau);//đổi mật khẩu mới khi chọn chức năng quên mật khẩu
+        Task<bool> ChangePassAsync(ViewDoiMatKhau changePass);
     }
     public class StudentSvc:IStudent
     {
@@ -39,7 +46,7 @@ namespace SignupSystem.Services
         {
             int stt = 0;
             try
-            {   
+            {   student.PassWord=Helpers.MaHoaHelper.Mahoa(student.PassWord);
                 await _context.Students.AddAsync(student);
                 await _context.SaveChangesAsync();
                 stt = student.Id_Student;
@@ -172,6 +179,147 @@ namespace SignupSystem.Services
                 return true;
             }
             return false;
+        }
+        public async Task<Student> LoginAsync(ViewLogin login)
+        {
+            Student student = await _context.Students.Where(x => x.Email == login.Email
+                  && x.PassWord == Helpers.MaHoaHelper.Mahoa(login.PassWord)).FirstOrDefaultAsync();
+            if (student != null)
+            {
+                return student;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<bool> isPass(string email, string pass)
+        {
+            bool ret = false;
+            try
+            {
+                Student nguoiDung = await _context.Students.Where(x => x.Email == email 
+                && x.PassWord ==Helpers.MaHoaHelper.Mahoa(pass))
+                    .FirstOrDefaultAsync();
+                if (nguoiDung != null)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
+            catch
+            {
+                ret = false;
+            }
+            return ret;
+        }
+        public async Task<bool> isEmail(string email)
+        {
+            bool ret = false;
+            try
+            {
+                Student nguoiDung = await _context.Students.Where(x => x.Email == email).FirstOrDefaultAsync();
+                if (nguoiDung != null)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
+            catch
+            {
+                ret = false;
+            }
+            return ret;
+        }
+        public async Task<bool> CreateOrUpdateOTPAsync(OTP oTP)
+        {
+            bool result = false;
+            try
+            {
+                OTP otp = new OTP();
+                otp = await _context.OTPs.Where(x => x.email == oTP.email).FirstOrDefaultAsync();
+                if (otp != null)
+                {
+                    otp.Code_OTP = oTP.Code_OTP;
+                    otp.ExpiredAt = oTP.ExpiredAt;
+                    otp.isUse = false;
+                    _context.OTPs.Update(otp);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    await _context.OTPs.AddAsync(oTP);
+                    await _context.SaveChangesAsync();
+                }
+                Helpers.SendEmailHelper.SendEmail(oTP.email, oTP.Code_OTP);
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+        public async Task<bool> ConfirmOTPAsync(string email, string OTP)
+        {
+            bool result = false;
+            try
+            {
+                OTP otp = new OTP();
+                otp = await _context.OTPs.Where(x => x.email == email && x.Code_OTP == OTP
+                                && DateTime.Now < x.ExpiredAt).FirstOrDefaultAsync();
+                if (otp != null)
+                {
+                    otp.isUse = true;
+                    _context.OTPs.Update(otp);
+                    await _context.SaveChangesAsync();
+                    result = true;
+                }
+                else
+                {
+                    result = false;
+                }
+
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+        public async Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau)
+        {
+            bool result = false;
+            try
+            {
+                Student nguoiDung = await _context.Students.Where(x => x.Email == quenMatKhau.Email).FirstOrDefaultAsync();
+                nguoiDung.PassWord =Helpers.MaHoaHelper.Mahoa(quenMatKhau.NewPass);
+                _context.Students.Update(nguoiDung);
+                await _context.SaveChangesAsync();
+                result = true;
+            }
+            catch { }
+            return result;
+        }
+        public async Task<bool> ChangePassAsync(ViewDoiMatKhau changePass)
+        {
+            bool result = false;
+            try
+            {
+                Student nguoiDung = await _context.Students.Where(x => x.Email == changePass.email).FirstOrDefaultAsync();
+                nguoiDung.PassWord =Helpers.MaHoaHelper.Mahoa(changePass.newPassword);
+                _context.Students.Update(nguoiDung);
+                await _context.SaveChangesAsync();
+                result = true;
+            }
+            catch { }
+            return result;
         }
     }
 }

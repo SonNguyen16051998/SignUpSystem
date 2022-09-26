@@ -46,5 +46,6 @@ namespace SignupSystem.Models
         public DbSet<Quyen> Quyens { get; set; }
         public DbSet<User_Quyen> Users_Quyen { get; set;}
         public DbSet<Role_Quyen> Role_Quyens { get; set; }
+        public DbSet<OTP> OTPs { get; set; }
     }
 }

@@ -11,11 +11,12 @@ namespace SignupSystem.Services
     public interface IKhoa
     {
         Task<List<Khoa>> GetKhoasAsync();//lay toan bo khoa-khoi
+        Task<Khoa> GetKhoaAsync(int id_Khoa);
         Task<bool> AddKhoaAsync(Khoa khoa);//them khoa vd:khoa CNTT
         Task<bool> UpdateKhoaAsync(Khoa khoa);//cap nhat khoa
         Task<bool> DeleteKhoaAsync(int id_Khoa);
     }
-    public class KhoaSvc
+    public class KhoaSvc:IKhoa
     {
         private readonly DataContext _context;
         public KhoaSvc(DataContext context)
@@ -27,6 +28,10 @@ namespace SignupSystem.Services
             List<Khoa> khoa = new List<Khoa>();
             khoa = await _context.Khoa.ToListAsync();
             return khoa;
+        }
+        public async Task<Khoa> GetKhoaAsync(int id_Khoa)
+        {
+            return await _context.Khoa.Where(x=>x.Id_Khoa==id_Khoa).FirstOrDefaultAsync();
         }
         public async Task<bool> AddKhoaAsync(Khoa khoa)
         {
@@ -54,6 +59,20 @@ namespace SignupSystem.Services
             catch
             {
             }
+            return ret;
+        }
+        public async Task<bool> DeleteKhoaAsync(int id_Khoa)
+        {
+            
+            bool ret = false;
+            try
+            {
+                Khoa khoa = await _context.Khoa.Where(x => x.Id_Khoa == id_Khoa).FirstOrDefaultAsync();
+                _context.Khoa.Remove(khoa);
+                await _context.SaveChangesAsync();
+                ret = true;
+            }
+            catch { }
             return ret;
         }
     }

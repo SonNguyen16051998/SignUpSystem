@@ -20,11 +20,11 @@ namespace SignupSystem.Models
         public TypeOfFee TypeOfFee { get; set; }//loại phí
         public float FeeRate { get; set; }//mức thu phí
         public float Discount { get; set; } // giảm giá
+        public DateTime PaymentDate { get; set; }
         [Column(TypeName ="nvarchar(255)")]
         public string Note { get; set; }
         [ForeignKey("Student")]
         public int Id_Student { get; set; }
-        public bool Status { get; set; }//trang thai dong hoc phi
         public Student Student { get; set; }
         public Class Class { get; set; }
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SignupSystem.Models.ViewModel;
 
 namespace SignupSystem.Services
 {
@@ -20,7 +21,12 @@ namespace SignupSystem.Services
         Task<bool> AddTeacherScheduleAsync(TeacherSchedule schedule);//them lich day cho giang vien
         Task<bool> UpdateTeacherScheduleAsync(TeacherSchedule schedule);//cap nhat lich day
         Task<bool> DeleteTeacherScheduleAsync(int id_schedule);//xoa lich day
-        Task<bool> CheckDeleteTeacher(int id_Teacher);  
+        Task<bool> CheckDeleteTeacher(int id_Teacher);
+        Task<Teacher> LoginAsync(ViewLogin login);//ddawng nhap
+        Task<bool> isPass(string email, string pass);//kiem tra pass dung hay khong
+        Task<bool> isEmail(string email);//kiem tra ton tai cua email
+        Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau);//đổi mật khẩu mới khi chọn chức năng quên mật khẩu
+        Task<bool> ChangePassAsync(ViewDoiMatKhau changePass);
     }
     public class TeacherSvc:ITeacher
     {
@@ -44,6 +50,7 @@ namespace SignupSystem.Services
             bool ret = false;
             try
             {
+                teacher.PassWord=Helpers.MaHoaHelper.Mahoa(teacher.PassWord);
                 await _context.Teachers.AddAsync(teacher);
                 await _context.SaveChangesAsync();
                 ret = true;
@@ -155,6 +162,92 @@ namespace SignupSystem.Services
                 return true;
             }
             return false;
+        }
+        public async Task<Teacher> LoginAsync(ViewLogin login)
+        {
+            Teacher teacher=await _context.Teachers.Where(x=>x.Email==login.Email 
+                && x.PassWord == Helpers.MaHoaHelper.Mahoa(login.PassWord)).FirstOrDefaultAsync();
+            if (teacher != null)
+            {
+                return teacher;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<bool> isPass(string email, string pass)
+        {
+            bool ret = false;
+            try
+            {
+                Teacher nguoiDung = await _context.Teachers.Where(x => x.Email == email
+                && x.PassWord == Helpers.MaHoaHelper.Mahoa(pass))
+                    .FirstOrDefaultAsync();
+                if (nguoiDung != null)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
+            catch
+            {
+                ret = false;
+            }
+            return ret;
+        }
+        public async Task<bool> isEmail(string email)
+        {
+            bool ret = false;
+            try
+            {
+                Teacher nguoiDung = await _context.Teachers.Where(x => x.Email == email).FirstOrDefaultAsync();
+                if (nguoiDung != null)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
+            }
+            catch
+            {
+                ret = false;
+            }
+            return ret;
+        }
+       
+        public async Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau)
+        {
+            bool result = false;
+            try
+            {
+                Teacher nguoiDung = await _context.Teachers.Where(x => x.Email == quenMatKhau.Email).FirstOrDefaultAsync();
+                nguoiDung.PassWord = Helpers.MaHoaHelper.Mahoa(quenMatKhau.NewPass);
+                _context.Teachers.Update(nguoiDung);
+                await _context.SaveChangesAsync();
+                result = true;
+            }
+            catch { }
+            return result;
+        }
+        public async Task<bool> ChangePassAsync(ViewDoiMatKhau changePass)
+        {
+            bool result = false;
+            try
+            {
+                Teacher nguoiDung = await _context.Teachers.Where(x => x.Email == changePass.email).FirstOrDefaultAsync();
+                nguoiDung.PassWord = Helpers.MaHoaHelper.Mahoa(changePass.newPassword);
+                _context.Teachers.Update(nguoiDung);
+                await _context.SaveChangesAsync();
+                result = true;
+            }
+            catch { }
+            return result;
         }
     }
 }

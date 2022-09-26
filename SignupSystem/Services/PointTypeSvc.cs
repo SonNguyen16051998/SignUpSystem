@@ -14,7 +14,7 @@ namespace SignupSystem.Services
         Task<List<PointType>> GetPointTypesAsync();//lay toan bo loai diem 
         Task<PointType> GetPointTypeAsync(int id_PointType);//lay thong tin mot loai diem
         Task<bool> AddPointTypeAsync(PointType pointType);//them loai diem
-        Task<bool> UpdateSubjectPoint(PointType pointType);//cap nhat loai diem 
+        Task<bool> UpdatePointType(PointType pointType);//cap nhat loai diem 
         Task<bool> DeletePoint(int id_Pointtype);//xoa loai diem
         Task<bool> CheckDeletePointTypeAsync(int id_pointtype);//kiem tra loai diem co xoa dc khong
     }
@@ -45,7 +45,7 @@ namespace SignupSystem.Services
             catch { }
             return ret;
         }
-        public async Task<bool> UpdateSubjectPoint(PointType pointType)
+        public async Task<bool> UpdatePointType(PointType pointType)
         {
             bool ret = false;
             try

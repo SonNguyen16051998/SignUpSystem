@@ -19,6 +19,7 @@ namespace SignupSystem.Models
         public string Note { get; set; }
         public int Month { get; set; }//lương tháng bao nhiêu
         public int Year { get; set; }//năm bao nhiêu
+        public bool Status { get; set; }//trạng thái chốt lương
         public Teacher Teacher { get; set; }
     }
 }

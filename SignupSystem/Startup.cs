@@ -49,9 +49,14 @@ namespace SignupSystem
             services.AddTransient<ISubject, SubjectSvc>();
             services.AddTransient<IClass, ClassSvc>();
             services.AddTransient<IStudentClass, Student_ClassSvc>();
-   
+            services.AddTransient<ISubjectPointType,Subject_PointTypeSvc>();
+            services.AddTransient<IPointType,PointTypeSvc>();
+            services.AddTransient<IHoliday, HolidaySvc>();
+            services.AddTransient<IThongKe,ThongKeSvc>();
+            services.AddTransient<IKhoa,KhoaSvc>();
+            services.AddTransient<IRole, RoleSvc>();
 
-
+  
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>
                {

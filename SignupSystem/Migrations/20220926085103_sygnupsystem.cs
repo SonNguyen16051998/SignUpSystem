@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SignupSystem.Migrations
 {
-    public partial class signupsystem : Migration
+    public partial class sygnupsystem : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,6 +49,20 @@ namespace SignupSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OTPs",
+                columns: table => new
+                {
+                    email = table.Column<string>(type: "varchar(30)", nullable: false),
+                    Code_OTP = table.Column<string>(type: "varchar(6)", nullable: true),
+                    isUse = table.Column<bool>(type: "bit", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OTPs", x => x.email);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PointTypes",
                 columns: table => new
                 {
@@ -79,13 +93,13 @@ namespace SignupSystem.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id_Quyen = table.Column<int>(type: "int", nullable: false)
+                    Id_Role = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NameQuyen = table.Column<string>(type: "nvarchar(100)", nullable: false)
+                    NameRole = table.Column<string>(type: "nvarchar(100)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id_Quyen);
+                    table.PrimaryKey("PK_Roles", x => x.Id_Role);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,7 +147,7 @@ namespace SignupSystem.Migrations
                     Id_Khoa = table.Column<int>(type: "int", nullable: false),
                     ClassName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     QtyStudent = table.Column<int>(type: "int", nullable: false),
-                    QtyStudentExist = table.Column<int>(type: "int", nullable: true),
+                    QtyStudentExist = table.Column<int>(type: "int", nullable: false),
                     Fee = table.Column<float>(type: "real", nullable: false),
                     Desc = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(255)", nullable: true),
@@ -177,7 +191,7 @@ namespace SignupSystem.Migrations
                         name: "FK_Role_Quyens_Roles_Id_Role",
                         column: x => x.Id_Role,
                         principalTable: "Roles",
-                        principalColumn: "Id_Quyen",
+                        principalColumn: "Id_Role",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -200,7 +214,7 @@ namespace SignupSystem.Migrations
                         name: "FK_Users_Roles_Id_Role",
                         column: x => x.Id_Role,
                         principalTable: "Roles",
-                        principalColumn: "Id_Quyen",
+                        principalColumn: "Id_Role",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -240,9 +254,9 @@ namespace SignupSystem.Migrations
                     TypeOfFee = table.Column<int>(type: "int", nullable: false),
                     FeeRate = table.Column<float>(type: "real", nullable: false),
                     Discount = table.Column<float>(type: "real", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    Id_Student = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Id_Student = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -324,7 +338,7 @@ namespace SignupSystem.Migrations
                 name: "Subject_Pointypes",
                 columns: table => new
                 {
-                    Code_Course = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Code_Course = table.Column<string>(type: "varchar(100)", nullable: false),
                     Code_Subject = table.Column<string>(type: "varchar(20)", nullable: false),
                     Id_PointType = table.Column<int>(type: "int", nullable: false),
                     Qty = table.Column<int>(type: "int", nullable: false),
@@ -332,7 +346,13 @@ namespace SignupSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subject_Pointypes", x => new { x.Code_Subject, x.Id_PointType });
+                    table.PrimaryKey("PK_Subject_Pointypes", x => new { x.Code_Subject, x.Id_PointType, x.Code_Course });
+                    table.ForeignKey(
+                        name: "FK_Subject_Pointypes_Courses_Code_Course",
+                        column: x => x.Code_Course,
+                        principalTable: "Courses",
+                        principalColumn: "Code_Course",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Subject_Pointypes_PointTypes_Id_PointType",
                         column: x => x.Id_PointType,
@@ -389,7 +409,8 @@ namespace SignupSystem.Migrations
                     TotalSalary = table.Column<float>(type: "real", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     Month = table.Column<int>(type: "int", nullable: false),
-                    Year = table.Column<int>(type: "int", nullable: false)
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -534,6 +555,11 @@ namespace SignupSystem.Migrations
                 column: "Id_Student");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Subject_Pointypes_Code_Course",
+                table: "Subject_Pointypes",
+                column: "Code_Course");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Subject_Pointypes_Id_PointType",
                 table: "Subject_Pointypes",
                 column: "Id_PointType");
@@ -586,6 +612,9 @@ namespace SignupSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "HolidaySchedules");
+
+            migrationBuilder.DropTable(
+                name: "OTPs");
 
             migrationBuilder.DropTable(
                 name: "Role_Quyens");

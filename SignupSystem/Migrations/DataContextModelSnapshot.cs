@@ -54,6 +54,9 @@ namespace SignupSystem.Migrations
                     b.Property<int>("QtyStudent")
                         .HasColumnType("int");
 
+                    b.Property<int>("QtyStudentExist")
+                        .HasColumnType("int");
+
                     b.HasKey("Id_Class");
 
                     b.HasIndex("Code_Course");
@@ -99,8 +102,8 @@ namespace SignupSystem.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("TypeOfFee")
                         .HasColumnType("int");
@@ -156,6 +159,25 @@ namespace SignupSystem.Migrations
                     b.ToTable("Khoa");
                 });
 
+            modelBuilder.Entity("SignupSystem.Models.OTP", b =>
+                {
+                    b.Property<string>("email")
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("Code_OTP")
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("isUse")
+                        .HasColumnType("bit");
+
+                    b.HasKey("email");
+
+                    b.ToTable("OTPs");
+                });
+
             modelBuilder.Entity("SignupSystem.Models.PointType", b =>
                 {
                     b.Property<int>("Id_PointType")
@@ -193,16 +215,16 @@ namespace SignupSystem.Migrations
 
             modelBuilder.Entity("SignupSystem.Models.Role", b =>
                 {
-                    b.Property<int>("Id_Quyen")
+                    b.Property<int>("Id_Role")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("NameQuyen")
+                    b.Property<string>("NameRole")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id_Quyen");
+                    b.HasKey("Id_Role");
 
                     b.ToTable("Roles");
                 });
@@ -240,6 +262,9 @@ namespace SignupSystem.Migrations
 
                     b.Property<float>("SalaryRecevied")
                         .HasColumnType("real");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<int>("TeacherSalary")
                         .HasColumnType("int");
@@ -408,13 +433,18 @@ namespace SignupSystem.Migrations
                     b.Property<int>("Id_PointType")
                         .HasColumnType("int");
 
+                    b.Property<string>("Code_Course")
+                        .HasColumnType("varchar(100)");
+
                     b.Property<int>("Qty")
                         .HasColumnType("int");
 
                     b.Property<int>("QtyRequied")
                         .HasColumnType("int");
 
-                    b.HasKey("Code_Subject", "Id_PointType");
+                    b.HasKey("Code_Subject", "Id_PointType", "Code_Course");
+
+                    b.HasIndex("Code_Course");
 
                     b.HasIndex("Id_PointType");
 
@@ -724,6 +754,12 @@ namespace SignupSystem.Migrations
 
             modelBuilder.Entity("SignupSystem.Models.Subject_PointType", b =>
                 {
+                    b.HasOne("SignupSystem.Models.Course", "Course")
+                        .WithMany("Subject_PointTypes")
+                        .HasForeignKey("Code_Course")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SignupSystem.Models.Subject", "Subject")
                         .WithMany("Subject_PointTypes")
                         .HasForeignKey("Code_Subject")
@@ -735,6 +771,8 @@ namespace SignupSystem.Migrations
                         .HasForeignKey("Id_PointType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Course");
 
                     b.Navigation("PointType");
 
@@ -819,6 +857,8 @@ namespace SignupSystem.Migrations
             modelBuilder.Entity("SignupSystem.Models.Course", b =>
                 {
                     b.Navigation("Classes");
+
+                    b.Navigation("Subject_PointTypes");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Khoa", b =>

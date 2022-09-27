@@ -10,8 +10,8 @@ using SignupSystem.Models;
 namespace SignupSystem.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220926085103_sygnupsystem")]
-    partial class sygnupsystem
+    [Migration("20220927050519_signupsystem")]
+    partial class signupsystem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,11 +101,20 @@ namespace SignupSystem.Migrations
                     b.Property<int>("Id_Student")
                         .HasColumnType("int");
 
+                    b.Property<int>("Id_Teacher")
+                        .HasColumnType("int");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<float>("PhiPhuThu")
+                        .HasColumnType("real");
+
+                    b.Property<float>("TongThu")
+                        .HasColumnType("real");
 
                     b.Property<int>("TypeOfFee")
                         .HasColumnType("int");
@@ -115,6 +124,8 @@ namespace SignupSystem.Migrations
                     b.HasIndex("Id_Class");
 
                     b.HasIndex("Id_Student");
+
+                    b.HasIndex("Id_Teacher");
 
                     b.ToTable("Fees");
                 });
@@ -602,19 +613,19 @@ namespace SignupSystem.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SignupSystem.Models.User_Quyen", b =>
+            modelBuilder.Entity("SignupSystem.Models.User_Role", b =>
                 {
-                    b.Property<int>("Id_User")
+                    b.Property<int>("Ma_Role")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id_Quyen")
+                    b.Property<int>("Ma_NguoiDung")
                         .HasColumnType("int");
 
-                    b.HasKey("Id_User", "Id_Quyen");
+                    b.HasKey("Ma_Role", "Ma_NguoiDung");
 
-                    b.HasIndex("Id_Quyen");
+                    b.HasIndex("Ma_NguoiDung");
 
-                    b.ToTable("Users_Quyen");
+                    b.ToTable("User_Roles");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Class", b =>
@@ -648,9 +659,17 @@ namespace SignupSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SignupSystem.Models.Teacher", "Teacher")
+                        .WithMany("Fee")
+                        .HasForeignKey("Id_Teacher")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Class");
 
                     b.Navigation("Student");
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Role_Quyen", b =>
@@ -828,23 +847,23 @@ namespace SignupSystem.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("SignupSystem.Models.User_Quyen", b =>
+            modelBuilder.Entity("SignupSystem.Models.User_Role", b =>
                 {
-                    b.HasOne("SignupSystem.Models.Quyen", "Quyen")
-                        .WithMany("User_Quyens")
-                        .HasForeignKey("Id_Quyen")
+                    b.HasOne("SignupSystem.Models.User", "NguoiDung")
+                        .WithMany()
+                        .HasForeignKey("Ma_NguoiDung")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SignupSystem.Models.User", "User")
-                        .WithMany("User_Quyens")
-                        .HasForeignKey("Id_User")
+                    b.HasOne("SignupSystem.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("Ma_Role")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Quyen");
+                    b.Navigation("NguoiDung");
 
-                    b.Navigation("User");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Class", b =>
@@ -880,8 +899,6 @@ namespace SignupSystem.Migrations
             modelBuilder.Entity("SignupSystem.Models.Quyen", b =>
                 {
                     b.Navigation("Role_Quyens");
-
-                    b.Navigation("User_Quyens");
                 });
 
             modelBuilder.Entity("SignupSystem.Models.Role", b =>
@@ -918,6 +935,8 @@ namespace SignupSystem.Migrations
 
             modelBuilder.Entity("SignupSystem.Models.Teacher", b =>
                 {
+                    b.Navigation("Fee");
+
                     b.Navigation("Salarys");
 
                     b.Navigation("teacherSchedules");
@@ -926,11 +945,6 @@ namespace SignupSystem.Migrations
             modelBuilder.Entity("SignupSystem.Models.TeacherSchedule", b =>
                 {
                     b.Navigation("student_Classes");
-                });
-
-            modelBuilder.Entity("SignupSystem.Models.User", b =>
-                {
-                    b.Navigation("User_Quyens");
                 });
 #pragma warning restore 612, 618
         }

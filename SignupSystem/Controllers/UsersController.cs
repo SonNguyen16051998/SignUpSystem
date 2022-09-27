@@ -10,120 +10,55 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class TeachersController : Controller
+    public class UsersController : Controller
     {
-        private readonly ITeacher _teacher;
+        private readonly IUser _user;
         private readonly IStudent _student;
-        public TeachersController(ITeacher teacher, IStudent student)
+        public UsersController(IUser user, IStudent student)
         {
             _student = student;
-            _teacher = teacher;
+            _user = user;
         }
         /// <summary>
-        /// lấy toàn bộ giáo viên
+        /// lấy toàn bộ người dùng
         /// </summary>
         /// <returns></returns>
-        [HttpGet, ActionName("teacher")]
-        public async Task<IActionResult> GetTeachersAsync()
+        [HttpGet,ActionName("user")]
+        public async Task<IActionResult> GetUsersAsync()
         {
             return Ok(new
             {
                 retCode = 1,
                 retText = "successfuly",
-                data = await _teacher.GetTeachersAsync()
+                data = await _user.GetUsersAsync()
             });
         }
         /// <summary>
-        /// thêm giáo viên
+        /// lấy một người dùng
         /// </summary>
-        /// <param name="teacher"></param>
+        /// <param name="id">mã người dùng</param>
         /// <returns></returns>
-        [HttpPost, ActionName("teacher")]
-        public async Task<IActionResult> PostAsync(Teacher teacher)
-        {
-            if (ModelState.IsValid)
-            {
-                if (await _teacher.isEmail(teacher.Email))
-                {
-                    return Ok(new
-                    {
-                        retCode = 0,
-                        retText = "Email đã tồn tại",
-                        data = ""
-                    });
-                }
-                else
-                {
-                    if (await _teacher.AddTeacherAsync(teacher))
-                    {
-                        return Ok(new
-                        {
-                            retCode = 1,
-                            retText = "successfuly",
-                            data = await _teacher.GetTeacherByIdAsync(teacher.Id_Teacher)
-                        });
-                    }
-                }
-
-            }
-            return Ok(new
-            {
-                retCode = 0,
-                retText = "failure"
-            });
-        }
-        /// <summary>
-        /// lấy toàn bộ lịch dạy của một giáo viên
-        /// </summary>
-        /// <param name="id">mã giảng viên</param>
-        /// <returns></returns>
-        [HttpGet("{id}"), ActionName("lichdaygiangvien")]
-        public async Task<IActionResult> GetTeacherSchedules(int id)
+        [HttpGet("{id}"),ActionName("user")]
+        public async Task<IActionResult> GetUserAsync(int id)
         {
             return Ok(new
             {
                 retCode = 1,
                 retText = "successfuly",
-                data = await _teacher.GetTeacherSchedules(id)
+                data = await _user.GetUserAsync(id)
             });
         }
         /// <summary>
-        /// cập nhật thông tin giáo viên
+        /// thêm người dùng
         /// </summary>
-        /// <param name="teacher"></param>
+        /// <param name="User"></param>
         /// <returns></returns>
-        [HttpPut, ActionName("teacher")]
-        public async Task<IActionResult> UpdateTeacherAsync(Teacher teacher)
+        [HttpPost,ActionName("user")]
+        public async Task<IActionResult> AddUserAsync(User User)
         {
             if (ModelState.IsValid)
             {
-                if (await _teacher.UpdateTeacherAsync(teacher))
-                {
-                    return Ok(new
-                    {
-                        retCode = 1,
-                        retText = "successfuly",
-                        data = await _teacher.GetTeacherByIdAsync(teacher.Id_Teacher)
-                    });
-                }
-            }
-            return Ok(new
-            {
-                retCode = 0,
-                retText = "failure"
-            });
-        }
-        /// <summary>
-        /// xóa giáo viên
-        /// </summary>
-        /// <param name="id">mã giáo viên</param>
-        /// <returns></returns>
-        [HttpDelete("{id}"), ActionName("teacher")]
-        public async Task<IActionResult> DeleteTeacherAsync(int id)
-        {
-            if (await _teacher.CheckDeleteTeacher(id))
-            {
-                if (await _teacher.DeleteTeacherAsync(id))
+                if (await _user.AddUserAsync(User))
                 {
                     return Ok(new
                     {
@@ -139,36 +74,22 @@ namespace SignupSystem.Controllers
             });
         }
         /// <summary>
-        /// lấy lịch dạy của toàn bộ giáo viên
+        /// cập nhật người dùng
         /// </summary>
+        /// <param name="User"></param>
         /// <returns></returns>
-        [HttpGet, ActionName("lichday")]
-        public async Task<IActionResult> GetTeacherSchedulesAsync()
-        {
-            return Ok(new
-            {
-                retCode = 1,
-                retText = "successfuly",
-                data = await _teacher.GetTeacherSchedules()
-            });
-        }
-        /// <summary>
-        /// thêm lịch dạy cho giáo viên
-        /// </summary>
-        /// <param name="schedule"></param>
-        /// <returns></returns>
-        [HttpPost, ActionName("lichday")]
-        public async Task<IActionResult> AddTeacherScheduleAsync(TeacherSchedule schedule)
+        [HttpPut, ActionName("user")]
+        public async Task<IActionResult> UpdateUserAsync(User User)
         {
             if (ModelState.IsValid)
             {
-                if (await _teacher.AddTeacherScheduleAsync(schedule))
+                if (await _user.UpdateUserAsync(User))
                 {
                     return Ok(new
                     {
                         retCode = 1,
                         retText = "successfuly",
-                        data = await _teacher.GetTeacherSchedules(schedule.Id_Teacher)
+                        data = await _user.GetUserAsync(User.Id_User)
                     });
                 }
             }
@@ -179,41 +100,14 @@ namespace SignupSystem.Controllers
             });
         }
         /// <summary>
-        /// cập nhật lịch dạy cho giáo viên
+        /// xóa người dùng
         /// </summary>
-        /// <param name="schedule"></param>
+        /// <param name="id">mã người dùng</param>
         /// <returns></returns>
-        [HttpPut, ActionName("lichday")]
-        public async Task<IActionResult> UpdateSchedule(TeacherSchedule schedule)
+        [HttpDelete("{id}"), ActionName("user")]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            if (ModelState.IsValid)
-            {
-                if (await _teacher.UpdateTeacherScheduleAsync(schedule))
-                {
-                    return Ok(new
-                    {
-                        retCode = 1,
-                        retText = "successfuly",
-                        data = await _teacher.GetTeacherSchedules(schedule.Id_Teacher)
-                    });
-                }
-
-            }
-            return Ok(new
-            {
-                retCode = 0,
-                retText = "failure"
-            });
-        }
-        /// <summary>
-        /// xóa lịch dạy
-        /// </summary>
-        /// <param name="id">mã lịch dạy</param>
-        /// <returns></returns>
-        [HttpDelete("id"), ActionName("lichday")]
-        public async Task<IActionResult> DeleteSchedule(int id)
-        {
-            if (await _teacher.DeleteTeacherScheduleAsync(id))
+            if (await _user.DeleteUserAsync(id))
             {
                 return Ok(new
                 {
@@ -224,7 +118,7 @@ namespace SignupSystem.Controllers
             return Ok(new
             {
                 retCode = 0,
-                retText = "failure"
+                retText = "exist class"
             });
         }
         /// <summary>
@@ -237,9 +131,9 @@ namespace SignupSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _teacher.isPass(changePass.email, changePass.password))
+                if (await _user.isPass(changePass.email, changePass.password))
                 {
-                    if (await _teacher.ChangePassAsync(changePass))
+                    if (await _user.ChangePassAsync(changePass))
                         return Ok(new
                         {
                             retCode = 1,
@@ -279,7 +173,7 @@ namespace SignupSystem.Controllers
             //xác nhận mã OTP thành công cho qua trang cập nhật mật khẩu mới
             if (ModelState.IsValid)
             {
-                if (await _teacher.QuenMatKhauAsync(quenMatKhau))
+                if (await _user.QuenMatKhauAsync(quenMatKhau))
                 {
                     return Ok(new
                     {
@@ -313,7 +207,7 @@ namespace SignupSystem.Controllers
             maOTP.ExpiredAt = DateTime.Now.AddMinutes(2);
             if (ModelState.IsValid)
             {
-                if (await _teacher.isEmail(maOTP.email))
+                if (await _user.isEmail(maOTP.email))
                 {
                     if (await _student.CreateOrUpdateOTPAsync(maOTP))
                     {
@@ -379,26 +273,6 @@ namespace SignupSystem.Controllers
             {
                 retCode = 0,
                 retText = "Dữ liệu không hợp lệ",
-                data = ""
-            });
-        }
-
-        [HttpPost,ActionName("salary")]
-        public async Task<IActionResult> AddSalary(Salary salary)
-        {
-            if(await _teacher.AddSalaryAsync(salary) > 0)
-            {
-                return Ok(new
-                {
-                    retCode = 1,
-                    retText = "Tạo phiếu lương thành công",
-                    data = ""
-                });
-            }
-            return Ok(new
-            {
-                retCode = 0,
-                retText = "Thất bại",
                 data = ""
             });
         }

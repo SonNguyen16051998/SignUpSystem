@@ -55,6 +55,10 @@ namespace SignupSystem
             services.AddTransient<IThongKe,ThongKeSvc>();
             services.AddTransient<IKhoa,KhoaSvc>();
             services.AddTransient<IRole, RoleSvc>();
+            services.AddTransient<IQuyen,QuyenSvc>();
+            services.AddTransient<IRole_Quyen,Role_QuyenSvc>();
+            services.AddTransient<IUser_Role,User_RoleSvc>();
+            services.AddTransient<IUser,UserSvc>();
 
   
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -26,7 +26,6 @@ namespace SignupSystem.Models
         [Compare("PassWord", ErrorMessage = "Password does not match!!!")]
         [NotMapped]
         public string RetypePassWord { get; set; }
-        public ICollection<User_Quyen> User_Quyens { get; set; }
         public Role Role { get; set; }
     }
 }

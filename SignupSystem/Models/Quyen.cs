@@ -10,7 +10,6 @@ namespace SignupSystem.Models
         public int Id_Quyen { get; set; }
         [Column(TypeName ="nvarchar(255)"),Required]
         public string Name { get; set; }
-        public ICollection<User_Quyen> User_Quyens { get; set; }
         public ICollection<Role_Quyen> Role_Quyens { get; set; }
     }
 }

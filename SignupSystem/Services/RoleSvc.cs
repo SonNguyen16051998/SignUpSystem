@@ -38,14 +38,14 @@ namespace SignupSystem.Services
             {
                 List<User> nguoiDungs = new List<User>();
                 nguoiDungs = await _context.Users.Where(x => x.Id_Role == id).ToListAsync();
-                foreach (var item in nguoiDungs)//xoas role của người dùng
+                foreach (var item in nguoiDungs)//chuyen role cua nguoi dung về mặc định
                 {
                     item.Id_Role = 1;
                     _context.Users.Update(item);
 
                 }
                 var role_Quyens = await _context.Role_Quyens.Where(x => x.Id_Role == id).ToListAsync();
-                foreach (var item in role_Quyens)//xóa quyền của role
+                foreach (var item in role_Quyens)//xóa các quyền của role
                 {
                     _context.Role_Quyens.Remove(item);
                 }

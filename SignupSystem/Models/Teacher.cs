@@ -45,5 +45,6 @@ namespace SignupSystem.Models
         public ICollection<TeacherSchedule> teacherSchedules { get; set; }
         public ICollection<Salary> Salarys { get; set; }
         public Subject  Subject { get; set; }
+        public ICollection<Fee> Fee { get; set; }   
     }
 }

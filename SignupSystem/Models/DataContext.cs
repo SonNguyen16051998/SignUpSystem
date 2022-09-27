@@ -22,8 +22,7 @@ namespace SignupSystem.Models
 
             model.Entity<Role_Quyen>().HasKey(e => new { e.Id_Role, e.Id_Quyen });
 
-            model.Entity<User_Quyen>().HasKey(e => new { e.Id_User, e.Id_Quyen });
-
+            model.Entity<User_Role>().HasKey(e => new { e.Ma_Role, e.Ma_NguoiDung });
         }
 
         public DbSet<Class> Classes { get; set; }
@@ -44,8 +43,8 @@ namespace SignupSystem.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }  
         public DbSet<Quyen> Quyens { get; set; }
-        public DbSet<User_Quyen> Users_Quyen { get; set;}
         public DbSet<Role_Quyen> Role_Quyens { get; set; }
         public DbSet<OTP> OTPs { get; set; }
+        public DbSet<User_Role> User_Roles { get; set; }
     }
 }

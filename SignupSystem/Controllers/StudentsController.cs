@@ -214,6 +214,7 @@ namespace SignupSystem.Controllers
         public async Task<IActionResult> ThuHocPhiAsync(Fee fee)
         {
             fee.PaymentDate = System.DateTime.Now;
+            fee.TongThu = fee.FeeRate + fee.PhiPhuThu - (fee.FeeRate * fee.Discount / 100);
             if (ModelState.IsValid)
             {
                 if (await _student.ThuHocPhiAsync(fee))

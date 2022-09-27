@@ -19,7 +19,7 @@ namespace SignupSystem.Services
         Task<Student> GetStudentAsync(int id_Student);//lấy thông tin học viên bằng id
         Task<bool> UpdateStudentAsync (Student student);//cập nhật thông tin học viên   
         Task<bool> DeleteStudentAsync(int id_Student);//xóa học viên
-        Task<bool> ThuHocPhiAsync(Fee fee);//tao phieu thu hoc phi
+        Task<bool> ThuHocPhiAsync(Fee fee);//thu hoc phi
         Task<bool> CheckStudent(int id_Student);//kiểm tra học viên có được xóa hay k
         Task<Student> LoginAsync(ViewLogin login);//dang nhap
         Task<bool> isPass(string email, string pass);//kiem tra pass dung hay khong

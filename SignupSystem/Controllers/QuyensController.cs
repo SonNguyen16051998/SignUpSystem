@@ -1,57 +1,59 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
+using SignupSystem.Models.ViewModel;
 using SignupSystem.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 
 namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RolesController : Controller
+    public class QuyensController : Controller
     {
-        private readonly IRole _role;
-        public RolesController(IRole role)
+        private readonly IQuyen _quyen;
+        public QuyensController(IQuyen quyen)
         {
-            _role = role;
+            _quyen = quyen;
         }
         /// <summary>
-        /// trả về toàn bộ vai trò
+        /// trả về toàn bộ quyền 
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<Role>> GetRolesAsync()
+        public async Task<List<Quyen>> GetQuyensAsync()
         {
-            return await _role.GetRolesAsync();
+            return await _quyen.GetQuyensAsync();
         }
         /// <summary>
-        /// trả về vai trò được chọn
+        /// trả về quyền được chọn
         /// </summary>
-        /// <param name="id">mã vai trò</param>
+        /// <param name="id">mã quyền</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<Role> GetRoleAsync(int id)
+        public async Task<Quyen> GetQuyenAsync(int id)
         {
-            return await _role.GetRoleAsync(id);
+            return await _quyen.GetQuyenAsync(id);
         }
         /// <summary>
-        /// thêm vai trò
+        /// thêm quyền
         /// </summary>
-        /// <param name="Role">tuyền về object role có tên và isdeleted=false</param>
+        /// <param name="quyen">truyền về object quyen trả về tên quyền </param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostRoleAsync([FromBody] Role Role)
+        public async Task<IActionResult> PostQuyenAsync([FromBody] Quyen quyen)
         {
             if (ModelState.IsValid)
             {
-                int id_Role = await _role.AddRoleAsync(Role);
-                if (id_Role > 0)
+                int id_Quyen = await _quyen.AddQuyenAsync(quyen);
+                if (id_Quyen > 0)
                 {
                     return Ok(new
                     {
                         retCode = 1,
-                        retText = "Thêm role thành công",
-                        data = await _role.GetRoleAsync(id_Role)
+                        retText = "Thêm quyền thành công",
+                        data = await _quyen.GetQuyenAsync(id_Quyen)
                     });
                 }
             }
@@ -63,23 +65,23 @@ namespace SignupSystem.Controllers
             });
         }
         /// <summary>
-        /// cập nhật role
+        /// cập nhật quyền
         /// </summary>
-        /// <param name="role">truyền về tên và isdelted=false</param>
+        /// <param name="Quyen">truyền đầy đủ dữ liệu tên</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> PutRoleAsync(Role role)
+        public async Task<IActionResult> PutQuyenAsync(Quyen Quyen)
         {
             if (ModelState.IsValid)
             {
-                int id_Role = await _role.UpdateRoleAsync(role);
-                if (id_Role > 0)
+                int id_quyen = await _quyen.UpdateQuyenAsync(Quyen);
+                if (id_quyen > 0)
                 {
                     return Ok(new
                     {
-                        retCode = 0,
-                        retText = "Dữ liệu không hợp lệ",
-                        data = await _role.GetRoleAsync(id_Role)
+                        retCode = 1,
+                        retText = "Cập nhật quyền thành công",
+                        data = await _quyen.GetQuyenAsync(id_quyen)
                     });
                 }
             }
@@ -91,26 +93,26 @@ namespace SignupSystem.Controllers
             });
         }
         /// <summary>
-        /// xóa vai trò, đồng thời vai trò sẽ được xóa khỏi người dùng và tất cả quyền của vai trò cũng sẽ bị xóa
+        /// xóa quyền và quyền sẽ được xóa khỏi role 
         /// </summary>
-        /// <param name="id">mã vai trò</param>
+        /// <param name="id">mã quyền</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> DeleteRoleAsync(int id)
+        public async Task<IActionResult> DeleteQuyenAsync(int id)
         {
-            if (await _role.DeleteRoleAsync(id))
+            if (await _quyen.DeleteQuyenAsync(id))
             {
                 return Ok(new
                 {
                     retCode = 1,
-                    retText = "Xóa role thành công",
-                    data = await _role.GetRoleAsync(id)
+                    retText = "Xóa quyền thành công",
+                    data = await _quyen.GetQuyenAsync(id)
                 });
             }
             return Ok(new
             {
                 retCode = 0,
-                retText = "Xóa thất bại",
+                retText = "Xóa quyền thất bại",
                 data = ""
             });
         }

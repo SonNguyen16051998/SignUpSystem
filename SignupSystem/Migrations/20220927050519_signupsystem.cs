@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SignupSystem.Migrations
 {
-    public partial class sygnupsystem : Migration
+    public partial class signupsystem : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -245,58 +245,27 @@ namespace SignupSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fees",
+                name: "User_Roles",
                 columns: table => new
                 {
-                    Id_Fee = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Id_Class = table.Column<int>(type: "int", nullable: false),
-                    TypeOfFee = table.Column<int>(type: "int", nullable: false),
-                    FeeRate = table.Column<float>(type: "real", nullable: false),
-                    Discount = table.Column<float>(type: "real", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    Id_Student = table.Column<int>(type: "int", nullable: false)
+                    Ma_NguoiDung = table.Column<int>(type: "int", nullable: false),
+                    Ma_Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fees", x => x.Id_Fee);
+                    table.PrimaryKey("PK_User_Roles", x => new { x.Ma_Role, x.Ma_NguoiDung });
                     table.ForeignKey(
-                        name: "FK_Fees_Classes_Id_Class",
-                        column: x => x.Id_Class,
-                        principalTable: "Classes",
-                        principalColumn: "Id_Class",
+                        name: "FK_User_Roles_Roles_Ma_Role",
+                        column: x => x.Ma_Role,
+                        principalTable: "Roles",
+                        principalColumn: "Id_Role",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Fees_Students_Id_Student",
-                        column: x => x.Id_Student,
-                        principalTable: "Students",
-                        principalColumn: "Id_Student",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users_Quyen",
-                columns: table => new
-                {
-                    Id_User = table.Column<int>(type: "int", nullable: false),
-                    Id_Quyen = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users_Quyen", x => new { x.Id_User, x.Id_Quyen });
-                    table.ForeignKey(
-                        name: "FK_Users_Quyen_Quyens_Id_Quyen",
-                        column: x => x.Id_Quyen,
-                        principalTable: "Quyens",
-                        principalColumn: "Id_Quyen",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Users_Quyen_Users_Id_User",
-                        column: x => x.Id_User,
+                        name: "FK_User_Roles_Users_Ma_NguoiDung",
+                        column: x => x.Ma_NguoiDung,
                         principalTable: "Users",
                         principalColumn: "Id_User",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -394,6 +363,46 @@ namespace SignupSystem.Migrations
                         principalTable: "Subjects",
                         principalColumn: "Code_Subject",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Fees",
+                columns: table => new
+                {
+                    Id_Fee = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id_Class = table.Column<int>(type: "int", nullable: false),
+                    TypeOfFee = table.Column<int>(type: "int", nullable: false),
+                    FeeRate = table.Column<float>(type: "real", nullable: false),
+                    Discount = table.Column<float>(type: "real", nullable: false),
+                    PhiPhuThu = table.Column<float>(type: "real", nullable: false),
+                    TongThu = table.Column<float>(type: "real", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    Id_Student = table.Column<int>(type: "int", nullable: false),
+                    Id_Teacher = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fees", x => x.Id_Fee);
+                    table.ForeignKey(
+                        name: "FK_Fees_Classes_Id_Class",
+                        column: x => x.Id_Class,
+                        principalTable: "Classes",
+                        principalColumn: "Id_Class",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Fees_Students_Id_Student",
+                        column: x => x.Id_Student,
+                        principalTable: "Students",
+                        principalColumn: "Id_Student",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Fees_Teachers_Id_Teacher",
+                        column: x => x.Id_Teacher,
+                        principalTable: "Teachers",
+                        principalColumn: "Id_Teacher",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -520,6 +529,11 @@ namespace SignupSystem.Migrations
                 column: "Id_Student");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Fees_Id_Teacher",
+                table: "Fees",
+                column: "Id_Teacher");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Role_Quyens_Id_Quyen",
                 table: "Role_Quyens",
                 column: "Id_Quyen");
@@ -595,14 +609,14 @@ namespace SignupSystem.Migrations
                 column: "Id_Teacher");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_Roles_Ma_NguoiDung",
+                table: "User_Roles",
+                column: "Ma_NguoiDung");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Id_Role",
                 table: "Users",
                 column: "Id_Role");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Quyen_Id_Quyen",
-                table: "Users_Quyen",
-                column: "Id_Quyen");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -632,7 +646,10 @@ namespace SignupSystem.Migrations
                 name: "Subject_Pointypes");
 
             migrationBuilder.DropTable(
-                name: "Users_Quyen");
+                name: "User_Roles");
+
+            migrationBuilder.DropTable(
+                name: "Quyens");
 
             migrationBuilder.DropTable(
                 name: "TeacherSchedules");
@@ -642,9 +659,6 @@ namespace SignupSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "PointTypes");
-
-            migrationBuilder.DropTable(
-                name: "Quyens");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -27,6 +27,7 @@ namespace SignupSystem.Services
         Task<bool> isEmail(string email);//kiem tra ton tai cua email
         Task<bool> QuenMatKhauAsync(ViewQuenMatKhau quenMatKhau);//đổi mật khẩu mới khi chọn chức năng quên mật khẩu
         Task<bool> ChangePassAsync(ViewDoiMatKhau changePass);
+        Task<int> AddSalaryAsync(Salary salary);//tính lương cho giảng viên
     }
     public class TeacherSvc:ITeacher
     {
@@ -248,6 +249,30 @@ namespace SignupSystem.Services
             }
             catch { }
             return result;
+        }
+        public async Task<int> AddSalaryAsync(Salary salary)
+        {
+            int ret = 0;
+            try
+            {
+                List<Fee> feeList = await _context.Fees.Where(x => x.Id_Teacher == salary.Id_Teacher
+                                    && x.PaymentDate.Year == salary.Year && x.PaymentDate.Month == salary.Month).ToListAsync();
+                float doanhthu = 0;
+                foreach(var item in feeList)
+                {
+                    doanhthu += item.TongThu;
+                }
+                salary.SalaryRecevied = doanhthu * salary.TeacherSalary / 100;
+                salary.TotalSalary= (doanhthu * salary.TeacherSalary / 100) + salary.TroCap;
+                await _context.Salarys.AddAsync(salary);
+                await _context.SaveChangesAsync();
+                ret = salary.Id_Salary;
+            }
+            catch
+            {
+                ret = 0;
+            }
+            return ret;
         }
     }
 }

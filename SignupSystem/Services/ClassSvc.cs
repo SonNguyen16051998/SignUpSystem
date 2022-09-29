@@ -38,14 +38,17 @@ namespace SignupSystem.Services
         {
             List<Class> lophoc = new List<Class>();
             lophoc = await _context.Classes
-                .Include(x=>x.Code_Course)
-                .Include(x=>x.Id_Khoa)
+                .Include(x=>x.Course)
+                .Include(x=>x.khoa)
                 .ToListAsync();
             return lophoc;
         }
         public async Task<Class> GetClassAsync(int id_Class)
         {
-            return await _context.Classes.Where(x=>x.Id_Class==id_Class).FirstOrDefaultAsync();
+            return await _context.Classes.Where(x=>x.Id_Class==id_Class)
+                .Include(x => x.Course)
+                .Include(x => x.khoa)
+                .FirstOrDefaultAsync();
         }
         public async Task<bool> AddClassAsync(Class entity)
         {

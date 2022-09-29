@@ -104,13 +104,15 @@ namespace SignupSystem.Services
                     studentClass.Id_ScheduleTeacher = teacherSchedule.Id_Schedule;
                     await _context.Student_Classes.AddAsync(studentClass);
 
-                    lophoc.QtyStudent += 1;
                     lophoc.QtyStudentExist += 1;
                     _context.Classes.Update(lophoc);
                     await _context.SaveChangesAsync();
                     ret = true;
                 }
-                ret = false;
+                else
+                {
+                    ret = false;
+                }    
             }
             catch { }
             return ret;

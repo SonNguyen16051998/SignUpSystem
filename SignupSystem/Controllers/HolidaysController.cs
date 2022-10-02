@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Services;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "User")]
     public class HolidaysController : Controller
     {
         private readonly IHoliday _holiday;
@@ -20,6 +22,7 @@ namespace SignupSystem.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync()
         {
             return Ok(new
@@ -35,6 +38,7 @@ namespace SignupSystem.Controllers
         /// <param name="id">mã ngày nghỉ</param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(new

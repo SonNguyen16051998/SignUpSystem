@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Models.ViewModel;
 using SignupSystem.Services;
@@ -10,6 +11,7 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "User")]
     public class User_RolesSvc : Controller
     {
         private readonly IUser_Role _nguoiDung_Role;

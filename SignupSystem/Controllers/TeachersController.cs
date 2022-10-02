@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Models.ViewModel;
 using SignupSystem.Services;
@@ -10,6 +11,7 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Policy = "User")]
     public class TeachersController : Controller
     {
         private readonly ITeacher _teacher;
@@ -78,6 +80,7 @@ namespace SignupSystem.Controllers
         /// <param name="id">mã giảng viên</param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("lichdaygiangvien")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> GetTeacherSchedules(int id)
         {
             return Ok(new
@@ -93,6 +96,7 @@ namespace SignupSystem.Controllers
         /// <param name="teacher"></param>
         /// <returns></returns>
         [HttpPut, ActionName("teacher")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> UpdateTeacherAsync(Teacher teacher)
         {
             if (ModelState.IsValid)
@@ -233,6 +237,7 @@ namespace SignupSystem.Controllers
         /// <param name="changePass">mật khẩu từ 6 đến 30 kí tự</param>
         /// <returns></returns>
         [HttpPut, ActionName("doimatkhau")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> DoiMatKhauAsync([FromBody] ViewDoiMatKhau changePass)
         {
             if (ModelState.IsValid)
@@ -274,6 +279,7 @@ namespace SignupSystem.Controllers
         /// <param name="quenMatKhau"></param>
         /// <returns></returns>
         [HttpPut, ActionName("quenmatkhau")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> QuenMatKhauAsync([FromBody] ViewQuenMatKhau quenMatKhau)
         {
             //xác nhận mã OTP thành công cho qua trang cập nhật mật khẩu mới
@@ -306,6 +312,7 @@ namespace SignupSystem.Controllers
         /// <param name="maOTP">trả về obect OTP chỉ cần trả về email. còn lại trả về null</param>
         /// <returns></returns>
         [HttpPut, ActionName("maotp")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> CreateOrUpdateOTPAsync(OTP maOTP)//truyền về email,mặc định(otp=null,isuse=false)
         {
             maOTP.Code_OTP = Helpers.RandomOTPHelper.random();
@@ -352,6 +359,7 @@ namespace SignupSystem.Controllers
         /// <param name="maOTP">truyền về object OTP gồm email, mã otp, còn lại có thể để null</param>
         /// <returns></returns>
         [HttpPut, ActionName("xacnhanotp")]
+        [Authorize(Policy = "Teacher")]
         public async Task<IActionResult> XacNhanOTP(OTP maOTP)//truyền về email và mã otp ,mặc định isuse=false
         {
             if (ModelState.IsValid)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Services;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "User")]
+    [Authorize(Policy = "Teacher")]
     public class PointTypesController : Controller
     {
         private readonly IPointType _pointType;

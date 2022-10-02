@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Models.ViewModel;
 using SignupSystem.Services;
@@ -10,6 +11,8 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Policy = "User")]
+    [Authorize(Policy = "Teacher")]
     public class StudentsController : Controller
     {
         private readonly IStudent _student;
@@ -74,6 +77,7 @@ namespace SignupSystem.Controllers
         /// <param name="id">mã học viên</param>
         /// <returns></returns>
         [HttpGet("{id}"), ActionName("lophoc")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetClassesByStudentAsync(int id)
         {
             return Ok(new
@@ -114,6 +118,7 @@ namespace SignupSystem.Controllers
         /// <param name="studentClass"></param>
         /// <returns></returns>
         [HttpPost, ActionName("dangkylop")]
+        [Authorize(Policy = "Student")]
         public async Task<IActionResult> ClassRegistrationAsync(Student_Class studentClass)
         {
             studentClass.Id_ScheduleTeacher = 1;

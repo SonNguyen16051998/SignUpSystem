@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Models.ViewModel;
 using SignupSystem.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System;
+using System.Linq;
 
 namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Policy ="Teacher")]
     public class ClassesController : Controller
     {
         private readonly IClass _class;

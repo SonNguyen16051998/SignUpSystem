@@ -60,7 +60,7 @@ namespace SignupSystem
             services.AddTransient<IUser_Role,User_RoleSvc>();
             services.AddTransient<IUser,UserSvc>();
 
-  
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>
                {
@@ -83,9 +83,51 @@ namespace SignupSystem
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SignupSystem", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                  });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+            });
+
+            /*services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));*/
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Student", policy =>
+                {
+                    policy.RequireClaim("Role", "Student");
+                });
+                options.AddPolicy("Teacher", policy =>
+                {
+                    policy.RequireClaim("Role", "Teacher");
+                });
+                options.AddPolicy("User", policy =>
+                {
+                    policy.RequireClaim("Role", "User");
+                });
             });
         }
 
@@ -107,6 +149,8 @@ namespace SignupSystem
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            /*app.UseCors("MyPolicy");*/
 
             app.UseAuthentication();    
 

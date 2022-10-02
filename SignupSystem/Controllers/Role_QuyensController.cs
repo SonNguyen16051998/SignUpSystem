@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SignupSystem.Models;
 using SignupSystem.Services;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace SignupSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Policy = "User")]
     public class Role_QuyensController : Controller
     {
         private readonly IRole_Quyen _role_Quyen;
